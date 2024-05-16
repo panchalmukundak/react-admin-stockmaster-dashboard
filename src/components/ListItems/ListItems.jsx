@@ -1,12 +1,15 @@
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Typography from "@mui/material/Typography";
+import {
+  Divider,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  Typography,
+} from "@mui/material";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { NavLink } from 'react-router-dom';
 
 const ListItems = () => {
@@ -48,13 +51,13 @@ const ListItems = () => {
         Transacoes
       </Typography>
     </ListItemButton>
-
-    <ListItemButton>
+    <Divider />
+    <ListItemButton component={NavLink} to="/home/edit-profile">
       <ListItemIcon>
-        <BarChartIcon />
+        <SettingsIcon />
       </ListItemIcon>
       <Typography variant="h6" component="li">
-        Reports
+        Configuracoes
       </Typography>
     </ListItemButton>
   </List>

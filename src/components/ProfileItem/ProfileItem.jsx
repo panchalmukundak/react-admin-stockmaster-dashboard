@@ -5,7 +5,6 @@ import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
-import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Stack from '@mui/material/Stack';
@@ -25,9 +24,7 @@ const ProfileItem = () => {
 
 
     const getOneLetterUserName = () => {
-        const userName = auth?.userName; // usando operador de coalescência nula
-        // ou
-        // const userName = auth && auth.userName; // verificando se auth não é undefined
+        const userName = auth?.userName; 
         return userName ? userName.charAt(0) : '';
     }
 
@@ -36,14 +33,9 @@ const ProfileItem = () => {
         navigate('/');
     }
 
-    const goToEditProfile = () => {
-        navigate('/home/edit-profile');
-    }
-
     const handleClose = () => {
         setOpenAnchorEl(null);
     };
-
 
 
     return (
@@ -51,10 +43,9 @@ const ProfileItem = () => {
             direction="row"
             justifyContent="center"
             alignItems="center"
-        >   
-            
+        > 
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                <Tooltip title="Account settings">
+                <Tooltip title="Conta">
                 <IconButton
                     onClick={(event) => setOpenAnchorEl(event.currentTarget)}
                     size="small"
@@ -96,7 +87,7 @@ const ProfileItem = () => {
                     display: 'block',
                     position: 'absolute',
                     top: 0,
-                    right: 14,
+                    right: 15,
                     width: 10,
                     height: 10,
                     bgcolor: 'background.paper',
@@ -104,15 +95,9 @@ const ProfileItem = () => {
                     zIndex: 0,
                     },
                 }}
-                transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={goToEditProfile}>
-                    <ListItemIcon>
-                        <SettingsIcon fontSize="small" />
-                    </ListItemIcon>
-                    Configuracoes
-                </MenuItem>
                 <MenuItem onClick={clearUserDataAndLogout}>
                     <ListItemIcon>
                         <LogoutIcon fontSize="small" />

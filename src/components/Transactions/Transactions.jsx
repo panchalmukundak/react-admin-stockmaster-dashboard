@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { 
   Typography,
@@ -12,28 +12,24 @@ import {
   Stack,
   CircularProgress,
 } from '@mui/material';
-import { useNavigate  } from "react-router-dom";
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
-import { changeTextFieldStyles, createEntryTransaction, createOutputTransaction, getAllItems, getAllTransactions } from '../../util/util';
+import { changeTextFieldStyles, getAllItems, } from '../../util/util';
 import { getUserLocalStorage } from "../../hooks/Context/AuthProvider/util";
 import { tokens } from '../../theme';
 import { useTheme } from '@emotion/react';
 import CustomAlert from '../CustomAlert/CustomAlert';
-import { getInventoryLocalStorage } from '../../hooks/Context/InventoryProvider/util';
+import { getInventoryLocalStorage } from "../../hooks/Context/InventoryProvider/util";
 import CustomItemField from '../CustomItemTextField/CustomItemField';
 
 const Transactions = () => {
   
   const [transactionType, setTransactionType] = useState("");
-  const [showItemsList, setShowItemsList] = useState(false);
+  //const [showItemsList, setShowItemsList] = useState(false);
   const [allItems, setAllItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState({});
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" });
-  const [transactions, setTransactions] = useState(null);
+  //const [transactions, setTransactions] = useState(null);
 
-  /*const handleChange = (event) => {
-    //setTransactionType(event.target.value);
-  }; */
 
   const { 
     control,
@@ -53,59 +49,7 @@ const Transactions = () => {
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
   const auth = useAuth();
-
-  
-  const handleItemChange = (item) => {
-    // Encontrar o item selecionado a partir do ID
-    //const item = allItems.find(item => item.id === selectedItemId);
-    // Atualizar o estado do item selecionado
-    setSelectedItem(item);
-  };
-
-  const onSubmit = async (formData) => {
-
-    try {
-
-      if (transactionType === "Entrada") {
-        const response = await createEntryTransaction(formData);
-        setTransactions(response);
-        console.log(transactions);
-      }
-      else{
-        const response = await createOutputTransaction(formData);
-        setTransactions(response);
-        console.log(transactions);
-      }
-
-      /*if(transactions && transactions.status === 200) {
-        setSnackbar({ 
-          open: true, 
-          message: 'Login feito sucesso.', 
-          severity: 'success' 
-        });
-      }
-      setSnackbar({ 
-        open: true, 
-        message: 'Email ou senhas invalidas.', 
-        severity: 'error' 
-      });
-      
-      navigate('/home');
-    } */
-    } catch (error) {
-      console.log("Erro ao fazer a transacao.", error);
-
-      setSnackbar({ 
-        open: true, 
-        message: 'Erro ao fazer a transacao.', 
-        severity: 'error' 
-      });
-
-      setError(true);
-    }
-  }
 
  
   useEffect(() => {
@@ -152,56 +96,14 @@ const Transactions = () => {
     setSelectedItem(item);
   };
 
- /*
-  const getTransactions = useCallback(async () => {
-    try {
-      if(auth.isValidToken(auth.token)) {
-        const { token } = getUserLocalStorage();
-        const { id } = getInventoryLocalStorage();
-        const headersConfig = {
-          headers: {
-              Authorization: `Bearer ${token}`,
-          },
-        };
-        //setLoading(true);
-        const response = await getAllTransactions(id, headersConfig);
-        if (response && response.status === 200) {
-          console.log(response);
-          //setRows(response.data);
-          //setLoading(false);
-        } else {
-          setSnackbar({ 
-            open: true, 
-            message: "Error ao listar os itens.", 
-            severity: "error" 
-          });
-        }
-      }
-    } catch (error) {
-        console.log("Error interno ao listar os itens.");
-        //setLoading(false);
-        setSnackbar({ 
-          open: true, 
-          message: "Erro interno. Tente novamente mais tarde.", 
-          severity: "error"
-        });
-    } 
-  }, [auth]);
-
-  
-  useEffect(() => {
-    getTransactions();
-  },[getTransactions]);
-  
-  */
-
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
+  };
  
- const handleCloseSnackbar = (event, reason) => {
-   if (reason === 'clickaway') {
-     return;
-   }
-   setSnackbar({ ...snackbar, open: false });
- };
+
 
   return (
 
@@ -215,8 +117,6 @@ const Transactions = () => {
         backgroundColor: colors.grey[800],
       }}
     >
-
-      <form noValidate onSubmit={handleSubmit(onSubmit)} style={{ mt: 1 }} autoComplete="off">
 
         <FormControl 
           sx={{ 
@@ -250,50 +150,49 @@ const Transactions = () => {
         {errors?.transactionType && (
           <FormHelperText sx={{ ml: 2 }} error>{errors?.transactionType?.message}</FormHelperText>
         )}
-      </FormControl>
+        </FormControl>
 
-      {transactionType === "Saida" && (
-        <FormControl 
-          sx={{ 
-            ...changeTextFieldStyles(Boolean(errors?.listItems?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]),
-            mt: 2, 
-            width: '100%' 
-          }} 
-        >
-          <InputLabel htmlFor="listItems">Itens</InputLabel>
-          <Controller
-          name="listItems"
-          control={control}
-          rules={{ required: "A escolha do item é obrigatória." }}
-          render={({ field }) => (
-            <Select
-              {...field}
-              labelId="listItems-select"
-              id="listItems-select"
-              label="Itens *"
-              autoComplete="off"
-            >
-              {allItems.map((item) => (
-              <MenuItem
-                key={item.id}
-                value={item.name}
-                onClick={() => handleItemClick(item)}
+        {transactionType === "Saida" && (
+          <FormControl 
+            sx={{ 
+              ...changeTextFieldStyles(Boolean(errors?.listItems?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]),
+              mt: 2, 
+              width: '100%' 
+            }} 
+          >
+            <InputLabel htmlFor="listItems">Itens</InputLabel>
+            <Controller
+            name="listItems"
+            control={control}
+            rules={{ required: "A escolha do item é obrigatória." }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                labelId="listItems-select"
+                id="listItems-select"
+                label="Itens *"
+                autoComplete="off"
               >
-                {item.name}
-              </MenuItem>
-          ))}
-            </Select>
+                {allItems.map((item) => (
+                <MenuItem
+                  key={item.id}
+                  value={item.name}
+                  onClick={() => handleItemClick(item)}
+                >
+                  {item.name}
+                </MenuItem>
+            ))}
+              </Select>
+            )}
+          />
+          {errors?.listItems && (
+            <FormHelperText sx={{ ml: 2 }} error>{errors?.listItems?.message}</FormHelperText>
           )}
-        />
-        {errors?.listItems && (
-          <FormHelperText sx={{ ml: 2 }} error>{errors?.listItems?.message}</FormHelperText>
+        </FormControl>
         )}
-      </FormControl>
-      )}
-
-       {transactionType === "Saida" && (
-          <CustomItemField transactionType={transactionType} selectedItem={selectedItem} />
-        )}
+       
+        <CustomItemField transactionType={transactionType} selectedItem={selectedItem} />
+        
 
         {/*<Stack>
           <Typography component="h2" variant="h5" 
@@ -424,8 +323,6 @@ const Transactions = () => {
           }
         </Button> 
         */}
-
-      </form>
 
       <CustomAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
     </Stack>

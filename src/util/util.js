@@ -164,37 +164,33 @@ export async function getAllTransactions(id, headers) {
   }
 }
 
-// entrada
-
-export async function createEntryTransaction(id, data, headers) {
-  try {
-    const response = await api.post(`/api/v1/transaction/created/entry/${id}`, data, headers);
-    if (response.status !== 201) {
+export async function createTransaction(id, data, headers, type) {
+  if(type === "Entrada") {
+    try {
+    
+      const response = await api.post(`/api/v1/transaction/created/entry/${id}`, data, headers);
+      if (response.status !== 201) {
+        return false;
+      }
+      else{
+        return response;
+      }
+    } catch (error) {
       return false;
     }
-    else{
-      return response;
-    }
-
-  } catch (error) {
-    return false;
   }
-}
-
-// saida
-
-export async function createOutputTransaction(id, data, headers) {
-  try {
-    const response = await api.post(`/api/v1/transaction/created/output/${id}`, data, headers);
-    if (response.status !== 201) {
+  else{
+    try{
+      const response = await api.post(`/api/v1/transaction/created/output/${id}`, data, headers);
+      if (response.status !== 201) {
+        return false;
+      }
+      else{
+        return response;
+      }
+    } catch (error) {
       return false;
     }
-    else{
-      return response;
-    }
-
-  } catch (error) {
-    return false;
   }
 }
 

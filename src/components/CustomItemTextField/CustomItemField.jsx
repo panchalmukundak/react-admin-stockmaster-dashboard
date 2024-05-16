@@ -4,22 +4,17 @@ import {
   Typography,
   Button, 
   TextField,
-  FormControl,
-  FormHelperText,
-  InputLabel, 
-  MenuItem,
-  Select,
   Stack,
   CircularProgress,
 } from '@mui/material';
 import { useNavigate  } from "react-router-dom";
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
-import { changeTextFieldStyles, createEntryTransaction, createOutputTransaction, getAllItems, getItem, getAllTransactions } from '../../util/util';
+import { changeTextFieldStyles, getAllItems, getItem, getAllTransactions, createTransaction } from '../../util/util';
 import { getUserLocalStorage } from "../../hooks/Context/AuthProvider/util";
 import { tokens } from '../../theme';
 import { useTheme } from '@emotion/react';
 import CustomAlert from '../CustomAlert/CustomAlert';
-import { getInventoryLocalStorage } from '../../hooks/Context/InventoryProvider/util';
+import { getInventoryLocalStorage } from "../../hooks/Context/InventoryProvider/util"
 import {
     topSnackbarPosition
 } from '../../util/util';
@@ -35,6 +30,11 @@ const CustomItemField = ({ transactionType, selectedItem }) => {
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" });
     const [transactions, setTransactions] = useState(null);
     const [allItems, setAllItems] = useState([]);
+    const[data, setData] = useState({
+        selectedItem,
+        formData,
+        transactionType
+    })
   
     const { 
         control,
@@ -62,43 +62,58 @@ const CustomItemField = ({ transactionType, selectedItem }) => {
     const onSubmit = async (formData) => {
 
         try {
+            if(auth.isValidToken(auth.token)) {
+                const { token } = getUserLocalStorage();
+                const { id } = getInventoryLocalStorage();
+                const headersConfig = {
+                  headers: {
+                      Authorization: `Bearer ${token}`,
+                  },
+                };
+
+                const { name, unitPrice, poster } = selectedItem;
+                const { quantityItem, observation } = formData;
+
+                const response = await createTransaction(
+                    id, 
+                    { 
+                        transactionType,
+                        quantityItem,
+                        observation,
+                        item: {
+                            name,
+                            unitPrice,
+                            poster
+                        }
+                    },
+                    headersConfig, 
+                    transactionType
+                );
+                console.log(response);
+                /*if(transactions && transactions.status === 201) {
+                    setTransactions(response);
+                    setSnackbar({ 
+                    open: true, 
+                    message: 'Transacao feito sucesso.', 
+                    severity: 'success' 
+                    });
+                }
+                setSnackbar({ 
+                    open: true, 
+                    message: 'Erro na transacao. Tente novamente.', 
+                    severity: 'error' 
+                }); */
     
-          if (transactionType === "Entrada") {
-            const response = await createEntryTransaction(formData);
-            setTransactions(response);
-            console.log(transactions);
-          }
-          else{
-            const response = await createOutputTransaction(formData);
-            setTransactions(response);
-            console.log(transactions);
-          }
-    
-          /*if(transactions && transactions.status === 200) {
-            setSnackbar({ 
-              open: true, 
-              message: 'Login feito sucesso.', 
-              severity: 'success' 
-            });
-          }
-          setSnackbar({ 
-            open: true, 
-            message: 'Email ou senhas invalidas.', 
-            severity: 'error' 
-          });
-          
-          navigate('/home');
-        } */
+            }
+           
         } catch (error) {
-          console.log("Erro ao fazer o login.", error);
-    
-          setSnackbar({ 
+            console.log("Erro na transacao.", error);
+
+            setSnackbar({ 
             open: true, 
-            message: 'Erro ao fazer o login.', 
+            message: 'Erro na transacao. Tente novamente mais tarde', 
             severity: 'error' 
-          });
-    
-          //setError(true);
+            });
         }
     }
 
@@ -143,152 +158,172 @@ const CustomItemField = ({ transactionType, selectedItem }) => {
     },[selectedItem.id, getSelectedItem]);
     
 
-
-    if (transactionType === "Saida" && selectedItem) 
-
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+        setSnackbar({ ...snackbar, open: false });
+    };
+    
     return (
 
         <Stack>
-        <Typography component="h2" variant="h5" 
-            sx={{ margin: "1.5rem 0", color: colors.purpleAccent[300] }}
-        >
-            Preenche informacoes do Item
-        </Typography>
-            <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="name"
-            label="Nome do Item"
-            name="name"
-            autoComplete="name"
-            value={selectedItem.name}
-            disabled
-            sx={ changeTextFieldStyles(Boolean(errors?.name?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
-            error={Boolean(errors?.name?.message)}
-            helperText={errors?.name?.message}
-            {...register("name", 
-                { 
-                    required: {
-                        value: true,
-                        message: "Nome do Item é obrigatório.",
-                    },
-                    minLength: {
-                        value: 3,
-                        message: "Nome do Item precisa ter mais de 3 letras."
-                    },
-                    maxLength: {
-                        value: 50,
-                        message: "Nome do Item ultrapassou o limite de caracteres."
-                    },
-                })
-            }
-            />
-            <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Imagem"
-            name="poster"
-            autoComplete="poster"
-            value={selectedItem.poster}
-            disabled
-            sx={ changeTextFieldStyles(Boolean(errors?.poster?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
-            error={Boolean(errors?.poster)}
-            helperText={errors?.poster?.message}
-            {...register("poster", 
-                {
-                required: {
-                    value: true,
-                    message: "Imagem é obrigatória." 
-                },
+            <form noValidate onSubmit={handleSubmit(onSubmit)} style={{ mt: 1 }} autoComplete="off">
+                <Typography component="h2" variant="h5" 
+                    sx={{ margin: "1.5rem 0", color: colors.purpleAccent[300] }}
+                >
+                    {selectedItem ? "Seus itens estao de saída" : "Preenche as informacoes do Item" }
+                </Typography>
+                <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+                label={selectedItem.name? "" : "Nome do Item"}
+                name="name"
+                autoComplete="name"
+                value={selectedItem.name ? selectedItem.name : ""}
+                disabled
+                sx={ changeTextFieldStyles(Boolean(errors?.name?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
+                error={Boolean(errors?.name?.message)}
+                helperText={errors?.name?.message}
+                {...register("name", 
+                    { 
+                        required: {
+                            value: true,
+                            message: "Nome do Item é obrigatório.",
+                        },
+                        disabled: {
+                            value: selectedItem.name ? true : false
+                        },
+                        minLength: {
+                            value: 3,
+                            message: "Nome do Item precisa ter mais de 3 letras."
+                        },
+                        maxLength: {
+                            value: 50,
+                            message: "Nome do Item ultrapassou o limite de caracteres."
+                        },
+                    })
                 }
-            )}
-            />
-            <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="unitPrice"
-            label="Preco do Item"
-            name="unitPrice"
-            type="number"
-            autoComplete="unitPrice"
-            value={selectedItem.unitPrice}
-            disabled
-            sx={ changeTextFieldStyles(Boolean(errors?.unitPrice?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
-            error={Boolean(errors?.unitPrice?.message)}
-            helperText={errors?.unitPrice?.message}
-            {...register("unitPrice", 
-                { 
-                required: {
-                    value: true,
-                    message: "Preco do Item é obrigatório.",
-                },
-                })
-            }
-            />
-            <TextField
-            fullWidth
-            required
-            margin="normal"
-            label="Quantidade do Item"
-            name="quantityItem"
-            autoComplete="quantityItem"
-            type="number"
-            value={selectedItem.quantityItem}
-            disabled
-            sx={ changeTextFieldStyles(Boolean(errors?.quantityItem?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
-            error={Boolean(errors?.quantityItem?.message)}
-            helperText={errors?.quantityItem?.message}
-            {...register("quantityItem", 
-                { 
-                required: {
-                    value: true,
-                    message: "Quantidade é obrigatória.",
-                },
-                })
-            }
-            />
-            <TextField
-            fullWidth
-            margin="normal"
-            label="Observacao"
-            name="observation"
-            autoComplete="observation"
-            value={selectedItem.observation}
-            disabled
-            sx={ changeTextFieldStyles(Boolean(errors?.observation?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
-            error={Boolean(errors?.observation?.message)}
-            helperText={errors?.observation?.message}
-            {...register("observation",)}
-            />
+                />
+                <TextField
+                margin="normal"
+                required
+                fullWidth
+                label={selectedItem.poster ? "" : "Imagem"}
+                name="poster"
+                autoComplete="poster"
+                value={selectedItem.poster ? selectedItem.poster : ""}
+                disabled
+                sx={ changeTextFieldStyles(Boolean(errors?.poster?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
+                error={Boolean(errors?.poster)}
+                helperText={errors?.poster?.message}
+                {...register("poster", 
+                    {
+                        required: {
+                            value: true,
+                            message: "Imagem é obrigatória." 
+                        },
+                        minLength: {
+                            value: 3,
+                            message: "Nome do Item precisa ter mais de 3 letras."
+                        },
+                        maxLength: {
+                            value: 50,
+                            message: "Nome do Item ultrapassou o limite de caracteres."
+                        },
+                        disabled: {
+                            value: selectedItem.poster ? true : false
+                        },
+                    }
+                )}
+                />
+                <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="unitPrice"
+                label={selectedItem.unitPrice ? "" : "Preco do Item"}
+                name="unitPrice"
+                type="number"
+                autoComplete="unitPrice"
+                value={selectedItem.unitPrice ? selectedItem.unitPrice : ""}
+                disabled
+                sx={ changeTextFieldStyles(Boolean(errors?.unitPrice?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
+                error={Boolean(errors?.unitPrice?.message)}
+                helperText={errors?.unitPrice?.message}
+                {...register("unitPrice", 
+                    { 
+                        required: {
+                            value: true,
+                            message: "Preco do Item é obrigatório.",
+                        },
+                        disabled: {
+                            value: selectedItem.unitPrice ? true : false
+                        },
+                    })
+                }
+                />
+                <TextField
+                fullWidth
+                required
+                margin="normal"
+                label="Quantidade"
+                name="quantityItem"
+                autoComplete="quantityItem"
+                type="number"
+                sx={ changeTextFieldStyles(Boolean(errors?.quantityItem?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
+                error={Boolean(errors?.quantityItem?.message)}
+                helperText={errors?.quantityItem?.message}
+                {...register("quantityItem", 
+                    { 
+                        required: {
+                            value: true,
+                            message: "Quantidade é obrigatória.",
+                        },
+                    })
+                }
+                />
+                <TextField
+                fullWidth
+                margin="normal"
+                label="Observacao"
+                name="observation"
+                autoComplete="observation"
+                sx={ changeTextFieldStyles(Boolean(errors?.observation?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
+                error={Boolean(errors?.observation?.message)}
+                helperText={errors?.observation?.message}
+                {...register("observation",)}
+                />
 
-            <Button
-            sx={{ 
-                mt: 3, 
-                mb: 2,
-            }}
-            variant="contained"
-            fullWidth
-            type="submit"
-            style={{
-                textTransform: 'none',
-                fontSize: "1.1rem",
-                fontWeight: 'bold',
-                backgroundColor: "#c64c01",
-            }}
-            disabled={isSubmitting}
-            >
-            {
-                isSubmitting ? <CircularProgress color="inherit" size={24} /> : "Enviar"
-            }
-            </Button>
-
-
+                <Button
+                sx={{ 
+                    mt: 3, 
+                    mb: 2,
+                }}
+                variant="contained"
+                fullWidth
+                type="submit"
+                style={{
+                    textTransform: 'none',
+                    fontSize: "1.1rem",
+                    fontWeight: 'bold',
+                    backgroundColor: "#c64c01",
+                }}
+                disabled={isSubmitting}
+                >
+                {
+                    isSubmitting ? <CircularProgress color="inherit" size={24} /> : "Enviar"
+                }
+                </Button>
+            </form>
+            <CustomAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
         </Stack>
+        
 
-  )
+    )
+    
 }
 
 CustomItemField.propTypes = {

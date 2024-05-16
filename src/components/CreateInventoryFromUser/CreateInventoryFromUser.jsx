@@ -28,6 +28,7 @@ import { useInventory } from "../../hooks/Context/InventoryProvider/useInventory
 import { capitalize, createInventory, deleteInventory, getAllInventories } from "../../util/util";
 import CustomAlert from "../CustomAlert/CustomAlert";
 import CustomDialog from "../CustomDialog/CustomDialog";
+import ProfileItem from "../ProfileItem/ProfileItem";
 
 const CreateInventoryFromUser = () => {
 
@@ -241,15 +242,22 @@ const CreateInventoryFromUser = () => {
     
   return (
     <div style={{ backgroundColor: colors.grey[900] }}>
-        <AppBar position="static">
+        <AppBar position="static" 
+            sx={{ 
+                display:"flex", 
+                flexDirection:"row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                px: 3,
+                width:"100%",
+                backgroundColor: colors.grey[900]
+            }}>
             <Box component="section" 
                 sx={{ 
                     display:"flex", 
                     justifyContent: 'flex-start',
                     alignItems: "center",
-                    backgroundColor: colors.grey[800],
                     border: "none",
-                    paddingLeft: 3,
                 }}
             >
                 <WidgetsIcon sx={{ color: colors.orangeAccent[500] }} />
@@ -263,6 +271,9 @@ const CreateInventoryFromUser = () => {
                 >
                     StockMaster
                 </Typography>
+            </Box>
+            <Box>
+                <ProfileItem />
             </Box>
         </AppBar>
 
