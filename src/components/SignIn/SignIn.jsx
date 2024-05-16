@@ -20,6 +20,8 @@ import {
   Stack,
   Grid,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 //icons
 import { 
@@ -31,57 +33,19 @@ import LockClockOutlinedIcon from '@mui/icons-material/LockClockOutlined';
 import { NavLink, useNavigate  } from "react-router-dom";
 //authenticate
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
-//alert
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+//theme
+import { tokens } from '../../theme';
+import { useTheme } from '@emotion/react';
+//js
+import { changeTextFieldStyles, topSnackbarPosition } from "../../util/util";
 
-
-const changeTextFieldStyles = (isErrorMessageExists) => ({
-  "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-    borderColor: isErrorMessageExists ? '#f44336' : '#858585',
-  },
-  "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-    borderColor: isErrorMessageExists ? '#f44336' : '#f2f0f0',
-  },
-  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    borderColor: isErrorMessageExists ? '#f44336' : '#f2f0f0',
-  },
-  "& .MuiInputLabel-outlined.Mui-focused": {
-    color: isErrorMessageExists ? '#f44336' : '#f2f0f0',
-  },
-  "& .MuiFormHelperText-root.Mui-focused": {
-    color: isErrorMessageExists ? '#f44336' : '#f2f0f0',
-  },
-  "& .MuiInputLabel-asterisk": {
-    color: isErrorMessageExists ? '#f44336' : '#f2f0f0',
-  },
-  "& .MuiInputLabel-root.Mui-focused": {
-    color: isErrorMessageExists ? '#f44336' : '#f2f0f0',
-  },
-  "& .MuiInputBase-input.MuiOutlinedInput-input": {
-    color: isErrorMessageExists ? '#f44336' : '#f2f0f0',
-  },
-  "& .MuiInputBase-input::placeholder": {
-    color: isErrorMessageExists ? '#f44336' : '#f2f0f0',
-  },
-  "& .MuiInputLabel-formControl" : {
-    color: isErrorMessageExists ? '#f44336' : '#f2f0f0',
-  },
-  "& .MuiSvgIcon-root": {
-    color: isErrorMessageExists ? '#f44336' : '#f2f0f0', // cor dos icones
-  }
-});
-
-const topSnackbarPosition = {
-  vertical: 'top',
-  horizontal: 'center',
-};
 
 const SignIn = () => {
   
   const [showPassword, setShowPassword] = useState(false);
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState(false);        
+  const [error, setError] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   const { 
     register, 
@@ -95,34 +59,49 @@ const SignIn = () => {
 
   const auth = useAuth();
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const onSubmit = async (formData) => {
 
     try {
-      //const response = await api.post('/api/v1/auth/login', formData);
-      await auth.authenticate(formData.userName, formData.password);
-      //localStorage.setItem('username', formData.userName);
-      //localStorage.setItem('a', response.data.token);
-      //console.log(response.config);
+      const response = await auth.authenticate(formData.userName, formData.password);
+      console.log(response);
 
+      if(response && response.status === 200) {
+        setSnackbar({ 
+          open: true, 
+          message: 'Login feito sucesso.', 
+          severity: 'success' 
+        });
+      }
+      setSnackbar({ 
+        open: true, 
+        message: 'Email ou senhas invalidas.', 
+        severity: 'error' 
+      });
+      
       navigate('/home');
-    } catch(error){
+    } 
+    catch (error) {
       console.log("Erro ao fazer o login.", error);
+
+      setSnackbar({ 
+        open: true, 
+        message: 'Erro ao fazer o login.', 
+        severity: 'error' 
+      });
+
       setError(true);
-      //navigate('/error');
     }
   }
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
 
   return (
@@ -132,8 +111,8 @@ const SignIn = () => {
       sx={{ 
         height: '100vh',
         background: 'linear-gradient(rgba(255, 255, 255, 0.1) 0%, rgb(0, 0, 0) 100%)',
-        backgroundColor: "#141414", 
-        color: "#f2f0f0"   
+        backgroundColor: colors.grey[900], 
+        color: colors.grey[100],   
       }}
     >
       <CssBaseline />
@@ -143,8 +122,8 @@ const SignIn = () => {
         square 
         sx={{ 
           padding: "3em 2rem 0",
-          backgroundColor: "#141414", 
-          color: "#f2f0f0",
+          backgroundColor: colors.grey[900], 
+          color: colors.grey[100], 
         }}
       >
         <Box
@@ -156,15 +135,17 @@ const SignIn = () => {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, backgroundColor: "#F75F01" }}>
+          <Avatar sx={{ margin: 1, backgroundColor: colors.orangeAccent[500] }}>
             <LockClockOutlinedIcon />
           </Avatar>
 
           <Typography variant="h5" component="h1" align="center" m={3} gutterBottom>
-            Acesse sua conta no <span style={{ fontWeight: 'bold' }}>StockMaster</span>
+            Acesse sua conta no <span style={{ fontSize: 24, fontWeight: 700 }}>
+              StockMaster</span>
           </Typography>
 
-          <form noValidate onSubmit={handleSubmit(onSubmit)} style={{ mt: 1 }} autoComplete="off">
+          <form noValidate onSubmit={handleSubmit(onSubmit)} 
+          style={{ marginTop: 1 }} autoComplete="off">
 
             <TextField
               margin="normal"
@@ -175,7 +156,7 @@ const SignIn = () => {
               name="userName"
               autoComplete="name"
               autoFocus
-              sx={ changeTextFieldStyles(Boolean(errors?.userName?.message)) }
+              sx={ changeTextFieldStyles(Boolean(errors?.userName?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]) }
               error={Boolean(errors?.userName?.message)}
               helperText={errors?.userName?.message}
               {...register("userName", 
@@ -190,14 +171,14 @@ const SignIn = () => {
             
             <FormControl 
               sx={{ 
-                ...changeTextFieldStyles(Boolean(errors?.password?.message)), 
+                ...changeTextFieldStyles(Boolean(errors?.password?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]), 
                 mt: 2, 
                 width: '100%' 
               }} 
             >
-              <InputLabel htmlFor="outlined-adornment-password" required>Senha</InputLabel>
+              <InputLabel htmlFor="password" required>Senha</InputLabel>
               <OutlinedInput
-                id="outlined-adornment-password"
+                id="password"
                 type={showPassword ? 'text' : 'password'}
                 label="Senha"
                 name="password"
@@ -236,28 +217,31 @@ const SignIn = () => {
               variant="contained"
               fullWidth
               type="submit"
-              onClick={handleClick}
               style={{
                 textTransform: 'none',
-                fontWeight: 'bold',
-                backgroundColor: "#E07D15",
+                fontWeight: 600,
+                fontSize: 17,
+                backgroundColor: colors.orangeAccent[500],
               }}
               disabled={isSubmitting}
             >
               {
-                isSubmitting ? <CircularProgress color="inherit" size={24} /> : "Entrar"
+                isSubmitting ? <CircularProgress color="inherit" size={25} /> : "Entrar"
               }
             </Button>
-            <Snackbar open={open} autoHideDuration={8000} onClose={handleClose}
-            anchorOrigin={topSnackbarPosition}>
+
+            <Snackbar open={snackbar.open} autoHideDuration={5000} onClose={handleCloseSnackbar}
+              anchorOrigin={topSnackbarPosition}>
               <Alert
-                onClose={handleClose}
-                severity={error ? "error" : "success"}
-                color ={error ? "error" : "success"}
+                onClose={handleCloseSnackbar}
+                severity={snackbar.severity}
+                color ={snackbar.severity ? "error" : "success"}
                 variant="filled"
-                sx={{ width: '100%' }}
+                sx={{
+                    width: "100%",
+                }}
               >
-                { error ? "Erro ao fazer o login!" : "Voce esta sendo redirecionado com scuesso!" }
+                {snackbar.message}
               </Alert>
             </Snackbar>
 
@@ -270,10 +254,10 @@ const SignIn = () => {
                   sx={{
                     textDecoration: "underline",
                     textTransform: 'none', 
-                    color: '#f2f0f0',
+                    color: colors.grey[100],
                     '&:hover': {
                       textDecoration: "underline",
-                      color: '#E07D15',
+                      color: colors.orangeAccent[400],
                       backgroundColor: "transparent",
                     },
                   }}

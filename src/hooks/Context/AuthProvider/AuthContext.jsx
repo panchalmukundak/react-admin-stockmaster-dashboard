@@ -1,7 +1,11 @@
 // 1
-import {createContext, useEffect, useState} from 'react'
-import { loginRequest, registerRequest, getUserLocalStorage, setUserLocalStorage } from '../../../util/util';
-import PropTypes from 'prop-types'; // Importe PropTypes
+import {createContext, useEffect, useState} from "react"
+//js
+import { loginRequest, registerRequest, getUserLocalStorage, setUserLocalStorage } from "./util";
+//prop
+import PropTypes from "prop-types";
+// validarToken
+import { jwtDecode } from 'jwt-decode';
 // 2
 export const AuthContext = createContext({});
 
@@ -10,7 +14,6 @@ export const AuthProvider = ({ children }) => {
     
     //4
     const [user, setUser] = useState(null);
-
 
     //14
     useEffect(() => {
@@ -23,22 +26,21 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
 
-    //6
     async function authenticate(userName, password) {
         try {
             const response = await loginRequest(userName, password);
             console.log(response);
             const payload = { token: response.data.token, id: response.data.id, userName };
-    
+
             setUser(payload);
             setUserLocalStorage(payload);
+
         } catch (error) {
-            console.error('Login failed:', error);
+            console.error('Auth Context - Login failed:', error);
             throw error;
         }
     }
 
-    //18
     async function register(name, userName, email, password, confirmPassword) {
         try {
             const response = await registerRequest(name, userName, email, password, confirmPassword);
@@ -49,18 +51,42 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    // 8
     function logout () {
-        //localStorage.removeItem("u");
         setUser(null);
         //13
         setUserLocalStorage(null);
         localStorage.clear();
     }
+ 
+    async function isValidToken(token) {
+        try {
+            const decoded = await jwtDecode(token);
+            const newUserName = decoded.sub;
+            const expirationTime = decoded.exp;
+            const expirationDate = new Date(expirationTime * 1000);
+            const currentDate = new Date();
+            console.log(expirationDate >= currentDate);// 03/05 > 05/05 // false
 
-    //5
+            if (expirationDate >= currentDate) {
+                console.log("O token ainda é válido.");
+                const user = getUserLocalStorage();
+                user.userName = newUserName;
+
+                setUserLocalStorage(user);
+                return true;
+            } else {
+                console.log("O token expirou.Faca login novamente.");
+                logout();
+               return false;
+            }
+        } catch (error) {
+            console.log("Erro ao decodificar o token:", error);
+            return false;
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{...user, authenticate, register, logout}}>
+        <AuthContext.Provider value={{...user, authenticate, register, isValidToken, logout}}>
             {children}
         </AuthContext.Provider>
     )

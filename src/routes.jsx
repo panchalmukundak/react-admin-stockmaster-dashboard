@@ -3,9 +3,13 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
-import { ColorModeContext, useMode, } from "./theme";
+import EditProfile from './pages/EditProfile';
+import Item from './pages/Item';
+import Transaction from './pages/Transaction';
 import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode, } from "./theme";
 import { AuthProvider } from './hooks/Context/AuthProvider/AuthContext';
+import { InventoryProvider } from './hooks/Context/InventoryProvider/InventoryContext';
 import ProtectedPage from './components/ProtectedPage/ProtectedPage';
 
 function AppRoutes() {
@@ -15,32 +19,58 @@ function AppRoutes() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <AuthProvider>
-        <Router>
-          <ThemeProvider theme={theme}> 
-            <CssBaseline />
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route 
-                path="/home" 
-                element={
-                  <ProtectedPage>
-                    <Home />
-                  </ProtectedPage>
-                } 
-              />
-              <Route 
-                path="/home/dashboard" 
-                element={
-                  <ProtectedPage>
-                    <Dashboard />
-                  </ProtectedPage>
-                } 
-              />
-              {/*<Route path="*" element={<PageNotFound />} />*/}
-            </Routes>
-          </ThemeProvider>
-        </Router>
+        <InventoryProvider>
+          <Router>
+            <ThemeProvider theme={theme}> 
+              <CssBaseline />
+              <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route
+                  path="/home"
+                  element={
+                    <ProtectedPage>
+                      
+                        <Home />
+                    </ProtectedPage>
+                  }
+                />
+                <Route
+                  path="/home/dashboard"
+                  element={
+                    <ProtectedPage>
+                        <Dashboard />
+                    </ProtectedPage>
+                  }
+                />
+                <Route
+                  path="/home/edit-profile"
+                  element={
+                    <ProtectedPage>
+                        <EditProfile />
+                    </ProtectedPage>
+                  }
+                />
+                <Route
+                  path="/home/item"
+                  element={
+                    <ProtectedPage>
+                        <Item />
+                    </ProtectedPage>
+                  }
+                />
+                <Route
+                  path="/home/transaction"
+                  element={
+                    <ProtectedPage>
+                      <Transaction />
+                    </ProtectedPage>
+                  }
+                />
+              </Routes>
+            </ThemeProvider>
+          </Router>
+        </InventoryProvider>
       </AuthProvider>
     </ColorModeContext.Provider>
   );

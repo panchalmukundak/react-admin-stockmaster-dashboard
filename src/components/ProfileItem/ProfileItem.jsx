@@ -1,5 +1,4 @@
 import { useState } from 'react';
-// mui
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -10,12 +9,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Stack from '@mui/material/Stack';
-//theme
 import { tokens } from "../../theme";
 import { useTheme } from '@mui/material/styles';
-//auth
 import { useAuth } from '../../hooks/Context/AuthProvider/useAuth';
-//router
 import { useNavigate } from 'react-router-dom';
 
 const ProfileItem = () => {
@@ -29,13 +25,19 @@ const ProfileItem = () => {
 
 
     const getOneLetterUserName = () => {
-        const oneLetter = auth.userName.charAt(0);
-        return oneLetter;
+        const userName = auth?.userName; // usando operador de coalescência nula
+        // ou
+        // const userName = auth && auth.userName; // verificando se auth não é undefined
+        return userName ? userName.charAt(0) : '';
     }
 
     const clearUserDataAndLogout = () => {
         auth.logout();
-        navigate('/login');
+        navigate('/');
+    }
+
+    const goToEditProfile = () => {
+        navigate('/home/edit-profile');
     }
 
     const handleClose = () => {
@@ -65,7 +67,8 @@ const ProfileItem = () => {
                             width: 32, 
                             height: 32,
                             textTransform: "capitalize",
-                            bgcolor: colors.grey[100]
+                            color: colors.primary[200],
+                            backgroundColor: colors.purpleAccent[600],
                         }}>
                         {getOneLetterUserName()}
                     </Avatar>
@@ -104,17 +107,17 @@ const ProfileItem = () => {
                 transformOrigin={{ horizontal: 'left', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
             >
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={goToEditProfile}>
                     <ListItemIcon>
                         <SettingsIcon fontSize="small" />
                     </ListItemIcon>
-                    Settings
+                    Configuracoes
                 </MenuItem>
                 <MenuItem onClick={clearUserDataAndLogout}>
                     <ListItemIcon>
                         <LogoutIcon fontSize="small" />
                     </ListItemIcon>
-                    Logout
+                    Sair
                 </MenuItem>
             </Menu>
         </Stack>

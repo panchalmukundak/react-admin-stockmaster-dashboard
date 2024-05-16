@@ -1,139 +1,160 @@
-import { useState } from 'react';
-//theme
-//mui
-import { styled } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiDrawer from '@mui/material/Drawer';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from "@mui/material/Typography";
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import { ListItemIcon } from '@mui/material';
-import { 
-  MenuItem,
-  ListItemButton,
-} from '@mui/material';
-//icon
+import { useState, useContext } from 'react';
+import { AppBar, IconButton, Typography, Box, Drawer } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-//import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { mainListItems, secondaryListItems } from '../ListItems/ListItems';
-import Topbar from '../Topbar/Topbar';
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import { ColorModeContext } from "../../theme";
+import { tokens } from "../../theme";
+import { useTheme } from '@mui/material/styles';
+import ListItems from "../ListItems/ListItems";
+import ProfileItem from "../ProfileItem/ProfileItem";
 
-
-
-const drawerWidth = 220;
-
-
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
-      transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(7),
-        },
-      }),
-    },
-  }),
-);
-
-
-const Item = ({title, to, icon, selected, setSelected}) => {
-  return(
-    <MenuItem
-      active={selected === title}
-      
-    >
-      <ListItemButton>
-        <ListItemIcon>
-          {icon}
-        </ListItemIcon>
-        <Typography variant="h6" component="li">
-          {title}
-        </Typography>
-      </ListItemButton>
-    </MenuItem>
-  )
-}
-
+const drawerWidth = 240;
 
 const Navbar = () => {
 
-  const [open, setOpen] = useState(true);
-  const [selected, setSelected] = useState("Dashboard");
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
-  const toggleDrawer = () => {
-    setOpen(!open);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
+
+  const handleDrawerClose = () => {
+    setIsClosing(true);
+    setMobileOpen(false);
   };
 
-  return (
-    
-    <Box sx={{ display: 'flex', }}>
-        <CssBaseline />
-        <Drawer variant="permanent" open={open}>                
-            <Toolbar
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent:"space-around",
-            }}
-            >
-                {open ?
-                    <Typography
-                        variant="h5"
-                        component="h1"
-                        sx={{ color: "#f75f01", fontWeight: "600" }}
-                    >
-                        StockMaster
-                    </Typography> 
-                    : ""
-                }
-                <IconButton onClick={toggleDrawer}>
-                    <MenuIcon/>
-                </IconButton>
-            </Toolbar>
-            <Divider />
-            <List component="nav">
-              {mainListItems}
-              <Divider sx={{ my: 1 }} />
-              {secondaryListItems}              
-            </List>
-            <Divider />
-            
-        </Drawer>
-        <Box
-            component="main"
-            sx={{
-            backgroundColor: (theme) =>
-                theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
-            flexGrow: 1,
-            height: '100vh',
-            overflow: 'auto',
-            }}
-        >
-        </Box>
-        <Stack width="100%">
-            <Topbar />
-        </Stack>
-    </Box>
+  const handleDrawerTransitionEnd = () => {
+    setIsClosing(false);
+  };
+
+  const handleDrawerToggle = () => {
+    if (!isClosing) {
+      setMobileOpen(!mobileOpen);
+    }
+  };
+
+
+  const drawer = (
+    <div >
+      <Box component="section" sx={{ 
+          display:"flex", justifyContent: 'center',
+          alignItems: "center",
+          backgroundColor: colors.grey[800],
+          border: "none",
+        }}
+      >
+        <WidgetsIcon sx={{ color: colors.orangeAccent[500] }} />
+        <Typography variant="h4" component="h1" 
+          sx={{ 
+            my: 3,
+            marginLeft: 1,
+            color: colors.orangeAccent[500], 
+            fontWeight: 600 
+          }}
+          >
+            StockMaster
+        </Typography>
+      </Box>
+      <ListItems />
+    </div>
   );
+
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+          boxShadow: "none",
+          background: "transparent",
+        }}
+      >
+        <Box sx={{ 
+          display:"flex",
+          justifyContent: "space-between",
+          p: 2,
+          boxShadow: "none",
+        }}
+        >
+          <Box>
+            <IconButton
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ display: { sm: 'none' }, }}
+              >
+              <MenuIcon />
+            </IconButton>
+          </Box>
+
+          <Box sx={{ display:"flex", }}>
+            <IconButton onClick={colorMode.toggleColorMode}>
+              {theme.palette.mode === "dark" ? (
+                <DarkModeOutlinedIcon />
+              ) : (
+                <LightModeOutlinedIcon />
+              )}
+            </IconButton>
+            <IconButton>
+              <NotificationsOutlinedIcon />
+            </IconButton>
+            <ProfileItem />
+          </Box>
+        </Box>
+
+      </AppBar>
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
+      >
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onTransitionEnd={handleDrawerTransitionEnd}
+          onClose={handleDrawerClose}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{ 
+            width:"100%",
+            display: { xs: 'block', sm: 'none', },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth,
+            },
+            "& .MuiPaper-root": {
+              background: "none",
+              backgroundColor: colors.grey[800],
+              border: "none",
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', sm:'flex', md: 'flex' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth,
+            },
+            "& .MuiPaper-root": {
+              background: "none",
+              backgroundColor: colors.grey[800],
+              border: "none",
+            }
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      
+    </Box>
+  )
 }
+
 export default Navbar;

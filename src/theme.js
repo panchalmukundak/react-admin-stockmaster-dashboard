@@ -7,25 +7,25 @@ export const tokens = (mode) => ({
   ...(mode === "dark"
     ? {
         grey: {
-          100: "#e0e0e0",
-          200: "#c2c2c2",
-          300: "#a3a3a3",
-          400: "#858585",
-          500: "#666666",
-          600: "#525252",
-          700: "#3d3d3d",
-          800: "#292929",
-          900: "#141414",
+          100: "#EEF1FA",
+          200: "#f0f0f0",
+          300: "#d0d0d0",
+          400: "#A3A9B6",
+          500: "#727272",
+          600: "#242424",
+          700: "#1D1D1F",
+          800: "#151517",
+          900: "#090A0D",
         },
         primary: {
-          100: "#f0f0f0",
-          200: "#a1a4ab",
-          300: "#727681",
+          100: "#f2f2f2",
+          200: "#e1e4eb",
+          300: "#c6c6c6",
           400: "#1F2A40",
           500: "#121212",
           600: "#101624",
           700: "#0c101b",
-          800: "#080b12",
+          800: "#080b22",
           900: "#040509",
         },
         greenAccent: {
@@ -50,7 +50,21 @@ export const tokens = (mode) => ({
           800: "#58201e",
           900: "#2c100f",
         },
+
+        purpleAccent: {
+          100: "#d8dcf6",
+          200: "#b1b8ee",
+          300: "#8a95e5",
+          400: "#6371dd",
+          500: "#3c4ed4",
+          600: "#303eaa",
+          700: "#242f7f",
+          800: "#181f55",
+          900: "#0c001a"
+        },
+
         blueAccent: {
+
           100: "#e4eff7",
           200: "#bcd8ec",
           300: "#94c1e1",
@@ -65,8 +79,8 @@ export const tokens = (mode) => ({
           100: "#fddfcc",
           200: "#fcbf99",
           300: "#fa9f67",
-          400: "#f97f34",
-          500: "#f75f01",
+          400: "#F67101",
+          500: "#F75F00",
           600: "#c64c01",
           700: "#943901",
           800: "#632600",
@@ -75,26 +89,27 @@ export const tokens = (mode) => ({
       }
     : {
         grey: {
-          100: "#141414",
-          200: "#292929",
-          300: "#3d3d3d",
-          400: "#525252",
-          500: "#666666",
-          600: "#858585",
-          700: "#a3a3a3",
-          800: "#c2c2c2",
-          900: "#e0e0e0",
+          100: "#0E0E0E",
+          200: "#151517",
+          300: "#1D1D1F",
+          400: "#242424",
+          500: "#727272",
+          600: "#A3A9B6",
+          700: "#d0d0d0",
+          800: "#f0f0f0",
+          900: "#EEF1FA",
+          
         },
         primary: {
           100: "#040509",
           200: "#080b12",
           300: "#0c101b",
-          400: "#f2f0f0", // manually changed
+          400: "#101624", // manually changed
           500: "#121212",
           600: "#1F2A40",
-          700: "#727681",
-          800: "#a1a4ab",
-          900: "#d0d1d5",
+          700: "#c6c6c6",
+          800: "#e1e4eb",
+          900: "#f2f2f2",
         },
         greenAccent: {
           100: "#0f2922",
@@ -118,6 +133,18 @@ export const tokens = (mode) => ({
           800: "#f1b9b7",
           900: "#f8dcdb",
         },
+        purpleAccent: {
+          100: "#0c102a",
+          200: "#181f55",
+          300: "#242f7f",
+          400: "#303eaa",
+          500: "#3c4ed4",
+          600: "#6371dd",
+          700: "#8a95e5",
+          800: "#b1b8ee",
+          900: "#d8dcf6",
+        },
+
         blueAccent: {
           100: "#071722",
           200: "#12364a",
@@ -191,30 +218,30 @@ export const themeSettings = (mode) => {
     },
     typography: {
       fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
-      fontSize: 16,
+      fontSize: 14,
       h1: {
         fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
-        fontSize: 44,
+        fontSize: 42,
       },
       h2: {
         fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
-        fontSize: 36,
+        fontSize: 34,
       },
       h3: {
         fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
-        fontSize: 28,
+        fontSize: 26,
       },
       h4: {
         fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
-        fontSize: 22,
+        fontSize: 20,
       },
       h5: {
         fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
-        fontSize: 20,
+        fontSize: 18,
       },
       h6: {
         fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
-        fontSize: 18,
+        fontSize: 16,
       },
     },
     components: {
@@ -263,3 +290,4 @@ export const useMode = () => {
 
   return [theme, colorMode];
 };
+

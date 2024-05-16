@@ -1,19 +1,19 @@
-import React from 'react';
+import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from "@mui/material/Typography";
-import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PeopleIcon from '@mui/icons-material/People';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
-import AssignmentIcon from '@mui/icons-material/Assignment';
+import { NavLink } from 'react-router-dom';
 
+const ListItems = () => {
+  return (
 
-export const mainListItems = (
-  <React.Fragment>
-    <ListItemButton>
+  <List component="nav" style={{margin: 3,}} >
+    <ListItemButton component={NavLink} to="/home/dashboard">
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
@@ -22,21 +22,30 @@ export const mainListItems = (
       </Typography>
     </ListItemButton>
 
-    <ListItemButton>
+    <ListItemButton component={NavLink} to="/home">
       <ListItemIcon>
-        <ShoppingCartIcon />
+        <LayersIcon />
       </ListItemIcon>
       <Typography variant="h6" component="li">
-        Orders
+        Estoques
       </Typography>
     </ListItemButton>
 
-    <ListItemButton>
+    <ListItemButton component={NavLink} to="/home/item">
       <ListItemIcon>
-        <PeopleIcon />
+        <AppRegistrationIcon />
       </ListItemIcon>
       <Typography variant="h6" component="li">
-        Customers
+        Itens
+      </Typography>
+    </ListItemButton>
+
+    <ListItemButton component={NavLink} to="/home/transaction">
+      <ListItemIcon>
+        <LocalAtmIcon />
+      </ListItemIcon>
+      <Typography variant="h6" component="li">
+        Transacoes
       </Typography>
     </ListItemButton>
 
@@ -48,47 +57,8 @@ export const mainListItems = (
         Reports
       </Typography>
     </ListItemButton>
-    
-    <ListItemButton>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <Typography variant="h6" component="li">
-        Integrations
-      </Typography>
-    </ListItemButton>
-  </React.Fragment>
-);
+  </List>
+  )
+}
 
-export const secondaryListItems = (
-  <React.Fragment>
-    <ListSubheader component="div" inset>
-      Saved reports
-    </ListSubheader>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <Typography variant="h6" component="li">
-        Current Month
-      </Typography>
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <Typography variant="h6" component="li">
-        Last quarter
-      </Typography>
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <Typography variant="h6" component="li">
-        Year-end sale
-      </Typography>
-    </ListItemButton>
-  </React.Fragment>
-);
-
+export default ListItems;

@@ -1,17 +1,10 @@
-
-import Navbar from "../components/Navbar/Navbar";
-
+import DashboardPanel from '../components/DashboardPanel/DashboardPanel';
 
 
 const Dashboard = () => {
-   
 
   return (
-    
-    <Navbar />
-
-
-    
+    <DashboardPanel />    
   )
 }
 

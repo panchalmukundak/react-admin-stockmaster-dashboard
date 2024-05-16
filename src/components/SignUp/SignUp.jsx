@@ -1,8 +1,5 @@
-
-//forms
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-//mui
 import { 
   Typography,
   Button, 
@@ -21,19 +18,14 @@ import {
   Grid,
   CircularProgress,
 } from '@mui/material';
-//icons
 import { 
   Visibility, 
   VisibilityOff,
 } from '@mui/icons-material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-// route
 import { NavLink, useNavigate  } from "react-router-dom";
-//auth
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
-//img
 import imgLeft from "../../assets/pexels-selim-can-ik-5860937.jpg";
-//util
 import { validateUserName, validateEmail } from '../../util/util';
 
 
@@ -108,7 +100,7 @@ const SignUp = () => {
       console.log(response);
       //setError(false);
 
-      navigate('/login'); // Navigate to login page
+      navigate('/');
 
     } catch (error) {
       //setError(true);
@@ -306,9 +298,9 @@ const SignUp = () => {
               }} 
               variant="outlined"  
             >
-              <InputLabel htmlFor="outlined-adornment-password" required>Confirmar Senha</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-newpassword" required>Confirmar Senha</InputLabel>
               <OutlinedInput
-                id="outlined-adornment-password"
+                id="outlined-adornment-newpassword"
                 type={showSecondPassword ? 'text' : 'password'}
                 name="confirmPassword"
                 label="Confirmar Senha"
@@ -351,7 +343,7 @@ const SignUp = () => {
                 textTransform: 'none',
                 fontSize: "1.1rem",
                 fontWeight: 'bold',
-                backgroundColor: "#E07D15",
+                backgroundColor: "#c64c01",
               }}
               disabled={isSubmitting}
             >
@@ -364,14 +356,14 @@ const SignUp = () => {
                 Já tem uma conta? 
                 <Button
                   component={NavLink}
-                  to="/login"
+                  to="/"
                   sx={{
                     textDecoration: "underline",
                     textTransform: 'none', 
                     color: '#f2f0f0',
                     '&:hover': {
                       textDecoration: "underline",
-                      color: '#E07D15',
+                      color: '#f75f01',
                       backgroundColor: "transparent",
                     },
                   }}

@@ -1,8 +1,8 @@
-import UserInventory from "../components/UserInventory/UserInventory";
+import CreateInventoryFromUser from "../components/CreateInventoryFromUser/CreateInventoryFromUser";
 
 const Home = () => {
   return (
-    <UserInventory/>
+    <CreateInventoryFromUser/>
   )
 }
 
