@@ -23,23 +23,16 @@ import PropTypes from 'prop-types';
 
 const CustomItemField = ({ transactionType, selectedItem }) => {
 
-    //const [transactionType, setTransactionType] = useState("");
-    //const [showItemsList, setShowItemsList] = useState(false);
-    //const [items, setItems] = useState([]);
     const [itemField, setItemField] = useState([]);
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" });
     const [transactions, setTransactions] = useState(null);
-    const [allItems, setAllItems] = useState([]);
-    const[data, setData] = useState({
-        selectedItem,
-        formData,
-        transactionType
-    })
-  
+    //const [allItems, setAllItems] = useState([]);
+
     const { 
         control,
         register, 
         handleSubmit,
+        reset,
         formState: {
           errors, isSubmitting
         },
@@ -55,13 +48,14 @@ const CustomItemField = ({ transactionType, selectedItem }) => {
     
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const navigate = useNavigate();
     const auth = useAuth();
   
 
     const onSubmit = async (formData) => {
 
         try {
+            let { name, unitPrice, poster } = selectedItem;
+            const { quantityItem, observation } = formData;
             if(auth.isValidToken(auth.token)) {
                 const { token } = getUserLocalStorage();
                 const { id } = getInventoryLocalStorage();
@@ -70,10 +64,6 @@ const CustomItemField = ({ transactionType, selectedItem }) => {
                       Authorization: `Bearer ${token}`,
                   },
                 };
-
-                const { name, unitPrice, poster } = selectedItem;
-                const { quantityItem, observation } = formData;
-
                 const response = await createTransaction(
                     id, 
                     { 
@@ -90,31 +80,34 @@ const CustomItemField = ({ transactionType, selectedItem }) => {
                     transactionType
                 );
                 console.log(response);
-                /*if(transactions && transactions.status === 201) {
-                    setTransactions(response);
+                if(response.status === 201) {
                     setSnackbar({ 
                     open: true, 
-                    message: 'Transacao feito sucesso.', 
+                    message: 'Transacao feita com sucesso.', 
                     severity: 'success' 
                     });
                 }
-                setSnackbar({ 
-                    open: true, 
-                    message: 'Erro na transacao. Tente novamente.', 
-                    severity: 'error' 
-                }); */
+                else{
+                    setSnackbar({ 
+                        open: true, 
+                        message: 'Erro na transacao. Tente novamente.', 
+                        severity: 'error' 
+                    });
+                }
     
             }
            
-        } catch (error) {
+        } 
+        catch (error) {
             console.log("Erro na transacao.", error);
-
             setSnackbar({ 
             open: true, 
             message: 'Erro na transacao. Tente novamente mais tarde', 
             severity: 'error' 
             });
         }
+        reset();
+        setSelectedItem({ name: '', unitPrice: '', poster: '' });
     }
 
 
@@ -227,11 +220,11 @@ const CustomItemField = ({ transactionType, selectedItem }) => {
                         },
                         minLength: {
                             value: 3,
-                            message: "Nome do Item precisa ter mais de 3 letras."
+                            message: "Imagem precisa ter mais de 3 letras."
                         },
                         maxLength: {
                             value: 50,
-                            message: "Nome do Item ultrapassou o limite de caracteres."
+                            message: "Imagem ultrapassou o limite de caracteres."
                         },
                         disabled: {
                             value: selectedItem.poster ? true : false
@@ -259,9 +252,13 @@ const CustomItemField = ({ transactionType, selectedItem }) => {
                             value: true,
                             message: "Preco do Item é obrigatório.",
                         },
-                        disabled: {
-                            value: selectedItem.unitPrice ? true : false
+                        minLength: { 
+                            value: 1, 
+                            message: "Preco do Item deve ter no mínimo 1 digito." 
                         },
+                        disabled: {
+                            value: selectedItem.poster ? true : false
+                        }
                     })
                 }
                 />
@@ -282,6 +279,11 @@ const CustomItemField = ({ transactionType, selectedItem }) => {
                             value: true,
                             message: "Quantidade é obrigatória.",
                         },
+                        minLength: { 
+                            value: 1, 
+                            message: "Quantidade deve ter no mínimo 1 caracteres." 
+                        },
+                        validate: value => value < selectedItem.amount || "A quantidade atual do item é insuficiente para esta transacao."
                     })
                 }
                 />

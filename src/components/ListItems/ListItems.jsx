@@ -9,6 +9,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import LayersIcon from '@mui/icons-material/Layers';
+import HistoryIcon from '@mui/icons-material/History';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { NavLink } from 'react-router-dom';
 
@@ -24,7 +25,6 @@ const ListItems = () => {
         Dashboard
       </Typography>
     </ListItemButton>
-
     <ListItemButton component={NavLink} to="/home">
       <ListItemIcon>
         <LayersIcon />
@@ -33,7 +33,6 @@ const ListItems = () => {
         Estoques
       </Typography>
     </ListItemButton>
-
     <ListItemButton component={NavLink} to="/home/item">
       <ListItemIcon>
         <AppRegistrationIcon />
@@ -42,7 +41,6 @@ const ListItems = () => {
         Itens
       </Typography>
     </ListItemButton>
-
     <ListItemButton component={NavLink} to="/home/transaction">
       <ListItemIcon>
         <LocalAtmIcon />
@@ -51,7 +49,14 @@ const ListItems = () => {
         Transacoes
       </Typography>
     </ListItemButton>
-    <Divider />
+    <ListItemButton component={NavLink} to="/home/history">
+      <ListItemIcon>
+        <HistoryIcon />
+      </ListItemIcon>
+      <Typography variant="h6" component="li">
+        Historico
+      </Typography>
+    </ListItemButton>
     <ListItemButton component={NavLink} to="/home/edit-profile">
       <ListItemIcon>
         <SettingsIcon />

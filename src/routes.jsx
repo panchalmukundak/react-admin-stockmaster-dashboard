@@ -6,11 +6,12 @@ import Dashboard from './pages/Dashboard';
 import EditProfile from './pages/EditProfile';
 import Item from './pages/Item';
 import Transaction from './pages/Transaction';
+import TransactionHistory from './pages/TransactionHistory';
+import ProtectedPage from './components/ProtectedPage/ProtectedPage';
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode, } from "./theme";
 import { AuthProvider } from './hooks/Context/AuthProvider/AuthContext';
 import { InventoryProvider } from './hooks/Context/InventoryProvider/InventoryContext';
-import ProtectedPage from './components/ProtectedPage/ProtectedPage';
 
 function AppRoutes() {
 
@@ -30,8 +31,7 @@ function AppRoutes() {
                   path="/home"
                   element={
                     <ProtectedPage>
-                      
-                        <Home />
+                      <Home />
                     </ProtectedPage>
                   }
                 />
@@ -64,6 +64,14 @@ function AppRoutes() {
                   element={
                     <ProtectedPage>
                       <Transaction />
+                    </ProtectedPage>
+                  }
+                />
+                <Route
+                  path="/home/history"
+                  element={
+                    <ProtectedPage>
+                      <TransactionHistory />
                     </ProtectedPage>
                   }
                 />

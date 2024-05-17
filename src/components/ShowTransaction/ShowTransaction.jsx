@@ -16,7 +16,7 @@ const ShowTransaction = () => {
         <Toolbar />
         <Header
           title="Transacoes" 
-          subtitle="Confira suas transacoes neste painel" 
+          subtitle="Faca suas transacoes neste painel" 
         />
         <Transactions />
       </Box>

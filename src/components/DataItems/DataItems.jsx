@@ -60,7 +60,6 @@ const DataItems = () => {
       align: "center",
       type: 'number',
       width: 120,
-      editable: true,
     },
     {
       field: 'poster',
