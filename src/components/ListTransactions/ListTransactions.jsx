@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   Box,
+  Button,
   Toolbar,
 } from "@mui/material";
 import {
@@ -15,12 +16,14 @@ import { tokens } from "../../theme";
 import CustomAlert from '../CustomAlert/CustomAlert';
 import Navbar from "../Navbar/Navbar";
 import Header from "../Header/Header";
+import * as XLSX from "xlsx";
 
 const ListTransactions = () => {
   const drawerWidth = 240;
 
   const [rows, setRows] = useState([]);
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" }); 
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" });
+  const [sheetData, setSheetData] = useState(null);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -111,6 +114,7 @@ const ListTransactions = () => {
         const response = await getAllTransactions(id, headersConfig);
         if (response && response.status === 200) {
           setRows(response.data);
+          setSheetData(response.data);
         } else {
           setSnackbar({ 
             open: true, 
@@ -141,6 +145,27 @@ const ListTransactions = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  const handleOnArrExport = () => {
+    if (!rows || !columns) {
+      console.error("rows or columns are undefined");
+      return;
+    }
+    const data = rows.map(row =>
+      columns.reduce((acc, column) => {
+        acc[column.headerName] = row[column.field];
+        return acc;
+      }, {})
+    );
+
+    const ws = XLSX.utils.json_to_sheet(data);
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Transactions");
+
+    XLSX.writeFile(wb, "Transactions.xlsx");
+  };
+
+
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -151,7 +176,29 @@ const ListTransactions = () => {
           title="Historico de Transacoes" 
           subtitle="Confira suas transacoes neste painel" 
         />
-          <Box
+        <div>
+          <Button 
+            onClick={handleOnArrExport} 
+            sx={{ 
+              marginTop: 3, 
+              padding: "0.25rem 1.5rem",
+              fontSize: "1rem", 
+              fontWeight: "600", 
+              color: colors.grey[800], 
+              backgroundColor: colors.greenAccent[600], 
+              textTransform: "none", 
+              //width: "120px", 
+              borderRadius: "25px", 
+              "&:hover": { 
+                color: colors.grey[100], 
+                backgroundColor: colors.purpleAccent[500] 
+              } 
+            }}
+          >
+            Export To Excel
+          </Button>
+        </div>
+        <Box
             sx={{
             height: 500,
             marginTop: "2rem",

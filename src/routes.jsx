@@ -12,6 +12,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode, } from "./theme";
 import { AuthProvider } from './hooks/Context/AuthProvider/AuthContext';
 import { InventoryProvider } from './hooks/Context/InventoryProvider/InventoryContext';
+import NotFoundPage from './pages/NotFoundPage';
 
 function AppRoutes() {
 
@@ -27,6 +28,7 @@ function AppRoutes() {
               <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="*" element={<NotFoundPage />} />
                 <Route
                   path="/home"
                   element={
