@@ -1,8 +1,5 @@
-
-//forms
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-//mui
 import { 
   Typography,
   Button, 
@@ -23,27 +20,21 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material';
-//icons
 import { 
   Visibility, 
   VisibilityOff,
 } from '@mui/icons-material';
 import LockClockOutlinedIcon from '@mui/icons-material/LockClockOutlined';
-// route
 import { NavLink, useNavigate  } from "react-router-dom";
-//authenticate
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
-//theme
 import { tokens } from '../../theme';
 import { useTheme } from '@emotion/react';
-//js
 import { changeTextFieldStyles, topSnackbarPosition } from "../../util/util";
 
 
 const SignIn = () => {
   
   const [showPassword, setShowPassword] = useState(false);
-  const [open, setOpen] = useState(false);
   const [error, setError] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
