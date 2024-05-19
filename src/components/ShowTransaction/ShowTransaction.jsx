@@ -15,8 +15,8 @@ const ShowTransaction = () => {
       <Box sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
         <Toolbar />
         <Header
-          title="Transacoes" 
-          subtitle="Faca suas transacoes neste painel" 
+          title="Transacao" 
+          subtitle="Atualize suas transacoes neste painel" 
         />
         <Transactions />
       </Box>

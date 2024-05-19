@@ -14,15 +14,12 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
-import { getUserLocalStorage } from "../../hooks/Context/AuthProvider/util";
-import {
-    changeTextFieldStyles,
-    updateUserData,
-} from '../../util/util';
+import { changeTextFieldStyles, updateUserData } from '../../util/util';
 import { tokens } from '../../theme';
 import { useTheme } from '@emotion/react';
-import { useAuth } from '../../hooks/Context/AuthProvider/useAuth';
 import CustomAlert from '../CustomAlert/CustomAlert';
+import { useAuth } from '../../hooks/Context/AuthProvider/useAuth';
+import { getUserLocalStorage } from '../../hooks/Context/AuthProvider/util';
 
 const UserFormData = () => {
 
@@ -30,9 +27,7 @@ const UserFormData = () => {
     const [showSecondPassword, setShowSecondPassword] = useState(false);
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" }); 
 
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-  
+      
     const { 
         register, 
         handleSubmit, 
@@ -43,9 +38,11 @@ const UserFormData = () => {
 
     const password = watch("password");
     const auth = useAuth();
-    
+
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+
     const onSubmitForm = async (formData) => {
-        
         const user = getUserLocalStorage();
         if(auth.isValidToken(user.token)) {
             const headersConfig = { 
@@ -81,7 +78,7 @@ const UserFormData = () => {
             }
             reset();
         }
-    };
+    }; 
 
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
@@ -143,7 +140,7 @@ const UserFormData = () => {
                 
                     sx={{ 
                     ...changeTextFieldStyles(Boolean(errors?.password?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]), 
-                    mt: 2, 
+                    pt: 1,
                     width: '100%' 
                     }} 
                 >
@@ -186,8 +183,9 @@ const UserFormData = () => {
                 )}
                 <FormControl 
                     sx={{ 
-                    ...changeTextFieldStyles(Boolean(errors?.confirmPassword?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]), 
-                    mt: 2, 
+                    ...changeTextFieldStyles(Boolean(errors?.confirmPassword?.message), colors.redAccent[500], colors.grey[400], colors.grey[100]),
+                    pt: 1,
+                    mt:2, 
                     width: '100%' 
                 }} 
                 variant="outlined"  
@@ -227,8 +225,7 @@ const UserFormData = () => {
                 )}
 
                 <Button
-                sx={{ 
-                    marginTop: 5, 
+                sx={{ marginTop: 5, 
                     marginBottom: 2,
                     "&:hover":{
                         backgroundColor: colors.orangeAccent[600],

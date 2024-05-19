@@ -29,7 +29,7 @@ const ListItems = () => {
         <LayersIcon />
       </ListItemIcon>
       <Typography variant="h6" component="li">
-        Estoques
+        Estoque
       </Typography>
     </ListItemButton>
     <ListItemButton component={NavLink} to="/home/item">
@@ -37,7 +37,7 @@ const ListItems = () => {
         <AppRegistrationIcon />
       </ListItemIcon>
       <Typography variant="h6" component="li">
-        Itens
+        Item
       </Typography>
     </ListItemButton>
     <ListItemButton component={NavLink} to="/home/transaction">
@@ -45,7 +45,7 @@ const ListItems = () => {
         <LocalAtmIcon />
       </ListItemIcon>
       <Typography variant="h6" component="li">
-        Transacoes
+        Transacao
       </Typography>
     </ListItemButton>
     <ListItemButton component={NavLink} to="/home/history">

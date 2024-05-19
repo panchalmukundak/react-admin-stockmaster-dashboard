@@ -89,7 +89,6 @@ const CreateInventoryFromUser = () => {
                 }
             }
         } catch (error) {
-            console.error("Erro ao criar inventário:", error);
             setSnackbar({ 
                 open: true, 
                 message: "Houve um erro de rede. Tente novamente mais tarde", 
@@ -116,7 +115,6 @@ const CreateInventoryFromUser = () => {
                 setLoading(true);
                 const response = await getAllInventories(id, headersConfig);
                 if (response && response.status === 200) {
-                    console.log(response.status);
                     setInventories(response.data);
                 setLoading(false);
                 } else {
@@ -128,7 +126,6 @@ const CreateInventoryFromUser = () => {
                 }
             }
         } catch (error) {
-            console.log("Error interno ao listar os estoques.");
             setLoading(false);
             setSnackbar({ 
                 open: true, 
@@ -156,13 +153,11 @@ const CreateInventoryFromUser = () => {
               },
             };
             if(auth.isValidToken(token)) {
-                //setLoading(true);
                 const response = await deleteInventory(inventoryId, headersConfig);
                 console.log(response);
                 if (response.status === 204) {
                     const updatedItems = inventories.filter(item => item.id !== inventoryId);
                     setInventories(updatedItems);
-                    console.log(inventories);
                     setSnackbar({ 
                         open: true, 
                         message: "Estoque excluido com sucesso.", 
@@ -171,7 +166,6 @@ const CreateInventoryFromUser = () => {
                     setOpen(false);
                 } 
                 else {
-                    console.log(response);
                     setSnackbar({ 
                         open: true, 
                         message: "Erro ao excluir o inventário.", 
@@ -181,7 +175,6 @@ const CreateInventoryFromUser = () => {
                 }
             }
         } catch(error) {
-          console.log(error);
           setSnackbar({ 
             open: true, 
             message: "Erro de rede ao excluir o inventário.", 
@@ -210,7 +203,6 @@ const CreateInventoryFromUser = () => {
             }
         } 
         catch (error) {
-            console.error("Erro ao entrar no dashboard do estoque:", error);
             setSnackbar({ 
                 open: true, 
                 message: "Erro de rede ao excluir o inventário.", 

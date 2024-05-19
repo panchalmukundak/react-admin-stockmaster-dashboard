@@ -26,7 +26,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { NavLink, useNavigate  } from "react-router-dom";
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
 import imgLeft from "../../assets/pexels-selim-can-ik-5860937.jpg";
-import { validateUserName, validateEmail } from '../../util/util';
+import CustomAlert from '../CustomAlert/CustomAlert';
 
 
 const changeTextFieldStyles = (isErrorMessageExists) => ({
@@ -70,7 +70,8 @@ const SignUp = () => {
   
   const [showPassword, setShowPassword] = useState(false);
   const [showSecondPassword, setShowSecondPassword] = useState(false);
-
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" });
+  
   const { 
     register, 
     handleSubmit,
@@ -86,10 +87,10 @@ const SignUp = () => {
 
   const auth = useAuth();
 
+
   const onSubmit = async (formData) => {
-    try {
-      //const response = await api.post('/api/v1/auth/register', formData);
-      
+
+    try {      
       const response = await auth.register(
         formData.name,
         formData.userName,
@@ -97,17 +98,40 @@ const SignUp = () => {
         formData.password,
         formData.confirmPassword
       );
-      console.log(response);
-      //setError(false);
-
-      navigate('/');
+      
+      if( response.status === 201 ){
+        setSnackbar({ 
+          open: true, 
+          message: "Cadastro realizado com sucesso.", 
+          severity: "success"
+        });
+        navigate('/');
+      }
+      else{
+        setSnackbar({
+          open: true,
+          message:
+            "Usuario ou Email ja estao cadastrados. Tente novamente.",
+          severity: "error",
+        });
+      }
 
     } catch (error) {
-      //setError(true);
-      console.log("Erro ao fazer o registro.", error);
-      //navigate('/error');
+      setSnackbar({
+        open: true,
+        message:
+          "Erro ao fazer o cadastro. Tente novamente mais tarde.",
+        severity: "error",
+      });
     }
   }
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+    setSnackbar({ ...snackbar, open: false });
+};
 
 
   return (
@@ -213,10 +237,7 @@ const SignUp = () => {
                     value: 40,
                     message: "Nome de Usuário ultrapassou o limite de caracteres."
                   },
-                  validate: async (value) => {
-                    const exists = await validateUserName(value);
-                    return !exists || "Este nome de Usuário já existe.";
-                  }
+                  
                 })
               }
             />
@@ -240,10 +261,7 @@ const SignUp = () => {
                     value: /^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/,
                     message: "Email não é válido. O email digitado precisa ser como example@email.com",
                   },
-                  validate: async (value) => {
-                    const exists = await validateEmail(value);
-                    return !exists || "Este email já existe.";
-                  }
+                  
                 }
             )}
             />
@@ -372,7 +390,7 @@ const SignUp = () => {
                 </Button>
               </Typography>
             </Stack>
-
+          <CustomAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
           </form>
         </Box>
       </Grid>

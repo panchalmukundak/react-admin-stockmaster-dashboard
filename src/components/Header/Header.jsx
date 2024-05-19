@@ -7,7 +7,7 @@ const Header = ({ title, subtitle }) => {
   const colors = tokens(theme.palette.mode);
   
   return (
-    <Box compmnenet="section">
+    <Box compmnenet="section" sx={{ marginBottom: 5 }}>
       <Typography
         component="h1"
         variant="h2"

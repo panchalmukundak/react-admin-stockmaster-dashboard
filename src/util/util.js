@@ -2,36 +2,31 @@ import api from "../services/api";
 
 // SignUp
 
-export async function validateUserName(value) {
+export async function validateUserName(userName) {
   try {
-    const response = await api.get(`/api/v1/users/username/${value}`);
-    return response.data.username;
+    const response = await api.get(`/api/v1/users/username/${userName}`);
+    return response;
   } catch (error) {
-    console.log("Erro ao verificar o nome de usuário!");
     return false;
   }
 }
 
-export async function validateEmail(value) {
+export async function validateEmail(userName) {
   try {
-    const response = await api.get(`/api/v1/users/email/${value}`);
-    return response.data.email;
+    const response = await api.get(`/api/v1/users/email/${userName}`);
+    return response;
   } catch (error) {
-    console.log("Erro ao verificar o email!");
     return false;
   }
 }
 
 // Inventory
 
-// obter inventarios do usuario
 export async function getAllInventories(userId, headers) {
   try {
     const response = await api.get(`/api/v1/inventories/allInventories/${userId}`, headers);
-    console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -39,11 +34,9 @@ export async function getAllInventories(userId, headers) {
 export async function getInventory(id, headers) {
   try{
     const response = await api.get(`/api/v1/inventories/${id}`, headers);
-    console.log(response);
     return response;
   }
   catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -69,7 +62,6 @@ export async function updateInventory(id, headers) {
     return response;
   }
   catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -78,11 +70,9 @@ export async function updateInventory(id, headers) {
 export async function deleteInventory(id, headers) {
   try{
     const response = await api.delete(`/api/v1/inventories/delete/${id}`, headers);
-    console.log(id);
     return response;
   }
   catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -94,7 +84,6 @@ export async function updateUserData (userId, data, headers) {
     return response;
   }
   catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -104,10 +93,8 @@ export async function updateUserData (userId, data, headers) {
 export async function getAllItems(id, headers) {
   try {
     const response = await api.get(`/api/v1/items/allItems/${id}`, headers);
-    console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -116,10 +103,8 @@ export async function getAllItems(id, headers) {
 export async function getItem(id, headers) {
   try {
     const response = await api.get(`/api/v1/items/${id}`, headers);
-    console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -146,7 +131,6 @@ export async function deleteItem(id, headers) {
     return response;
   }
   catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -156,10 +140,8 @@ export async function deleteItem(id, headers) {
 export async function getAllTransactions(id, headers) {
   try {
     const response = await api.get(`/api/v1/transaction/allTransactions/${id}`, headers);
-    console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -192,8 +174,6 @@ export async function createOutputTransaction(id, data, headers) {
     return false;
   }
 }
-
-
 
 
 // Styles - Validate TextFields

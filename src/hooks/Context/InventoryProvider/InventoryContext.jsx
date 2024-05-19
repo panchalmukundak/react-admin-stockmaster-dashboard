@@ -21,7 +21,6 @@ export const InventoryProvider = ({ children }) => {
     async function getInventory(inventoryId, headers) {
         try {
             const response = await getInventoryByUser(inventoryId, headers);
-            console.log(response.data);
             const payload = { 
                 id: response.data.id, 
                 name: response.data.name, 

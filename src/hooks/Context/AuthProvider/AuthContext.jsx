@@ -1,21 +1,15 @@
-// 1
 import {createContext, useEffect, useState} from "react"
-//js
 import { loginRequest, registerRequest, getUserLocalStorage, setUserLocalStorage } from "./util";
-//prop
 import PropTypes from "prop-types";
-// validarToken
+
 import { jwtDecode } from 'jwt-decode';
-// 2
+
 export const AuthContext = createContext({});
 
-// 3
 export const AuthProvider = ({ children }) => {
     
-    //4
     const [user, setUser] = useState(null);
 
-    //14
     useEffect(() => {
         const user = getUserLocalStorage();
 
@@ -44,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     async function register(name, userName, email, password, confirmPassword) {
         try {
             const response = await registerRequest(name, userName, email, password, confirmPassword);
-            console.log(response);
+            return response;
         } catch (error) {
             console.error('Registration failed:', error);
             throw error;
@@ -53,7 +47,6 @@ export const AuthProvider = ({ children }) => {
 
     function logout () {
         setUser(null);
-        //13
         setUserLocalStorage(null);
         localStorage.clear();
     }
@@ -65,22 +58,18 @@ export const AuthProvider = ({ children }) => {
             const expirationTime = decoded.exp;
             const expirationDate = new Date(expirationTime * 1000);
             const currentDate = new Date();
-            console.log(expirationDate >= currentDate);// 03/05 > 05/05 // false
 
             if (expirationDate >= currentDate) {
-                console.log("O token ainda é válido.");
                 const user = getUserLocalStorage();
                 user.userName = newUserName;
 
                 setUserLocalStorage(user);
                 return true;
             } else {
-                console.log("O token expirou.Faca login novamente.");
                 logout();
                return false;
             }
         } catch (error) {
-            console.log("Erro ao decodificar o token:", error);
             return false;
         }
     }

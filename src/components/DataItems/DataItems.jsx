@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Box,
-} from "@mui/material";
-import {
-  DataGrid,
-} from '@mui/x-data-grid';
+import { Box, } from "@mui/material";
+import {  DataGrid, } from '@mui/x-data-grid';
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
 import { getUserLocalStorage } from "../../hooks/Context/AuthProvider/util";
 import { getInventoryLocalStorage } from '../../hooks/Context/InventoryProvider/util';
@@ -88,11 +84,9 @@ const DataItems = () => {
               Authorization: `Bearer ${token}`,
           },
         };
-        //setLoading(true);
         const response = await getAllItems(id, headersConfig);
         if (response && response.status === 200) {
           setRows(response.data);
-          //setLoading(false);
         } else {
           setSnackbar({ 
             open: true, 
@@ -102,8 +96,6 @@ const DataItems = () => {
         }
       }
     } catch (error) {
-        console.log("Error interno ao listar os itens.");
-        //setLoading(false);
         setSnackbar({ 
           open: true, 
           message: "Erro interno. Tente novamente mais tarde.", 

@@ -66,8 +66,6 @@ const SignIn = () => {
 
     try {
       const response = await auth.authenticate(formData.userName, formData.password);
-      console.log(response);
-
       if(response && response.status === 200) {
         setSnackbar({ 
           open: true, 

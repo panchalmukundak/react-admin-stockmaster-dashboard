@@ -186,8 +186,7 @@ const ListTransactions = () => {
               fontWeight: "600", 
               color: colors.grey[800], 
               backgroundColor: colors.greenAccent[600], 
-              textTransform: "none", 
-              //width: "120px", 
+              textTransform: "none",
               borderRadius: "25px", 
               "&:hover": { 
                 color: colors.grey[100], 
