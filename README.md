@@ -30,9 +30,6 @@ Após o servidor iniciar com sucesso, você poderá acessar sua aplicação em s
 
 http://localhost:3000
 
-## Contribuição
-
-Sinta-se à vontade para contribuir com melhorias para este projeto através de pull requests e relatar problemas encontrados através das issues.
 
 ## Licença
 
