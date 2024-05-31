@@ -179,17 +179,16 @@ const ListTransactions = () => {
         <div>
           <Button 
             onClick={handleOnArrExport} 
-            sx={{ 
-              marginTop: 3, 
-              padding: "0.25rem 1.5rem",
+            sx={{  
+              padding: "0.5rem 1.25rem",
               fontSize: "1rem", 
               fontWeight: "600", 
-              color: colors.grey[800], 
+              color: "#090A0D", 
               backgroundColor: colors.greenAccent[600], 
               textTransform: "none",
               borderRadius: "25px", 
               "&:hover": { 
-                color: colors.grey[100], 
+                color: "#f0f0f0", 
                 backgroundColor: colors.purpleAccent[500] 
               } 
             }}

@@ -304,7 +304,7 @@ const CreateInventoryFromUser = () => {
                     
                     <Box sx={{ justifyContent: "center", marginTop: "1.75rem", alignSelf: "center" }}>
                         <Fab 
-                            sx={{ color: colors.grey[100], backgroundColor: colors.purpleAccent[500],
+                            sx={{ color: colors.grey[900], backgroundColor: colors.purpleAccent[500],
                                 "&:hover": { backgroundColor: colors.orangeAccent[600], }
                             }} 
                             aria-label="adicionar estoque" onClick={() => setOpen(true)}>

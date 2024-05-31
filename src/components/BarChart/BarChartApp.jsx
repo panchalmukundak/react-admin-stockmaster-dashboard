@@ -5,85 +5,84 @@ import { getInventoryLocalStorage } from "../../hooks/Context/InventoryProvider/
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
-//import { ResponsiveBar } from "@nivo/bar";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
+import { BarChart } from '@mui/x-charts/BarChart';
 
 const BarChartApp = () => {
-    const [data, setData] = useState();
-    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" }); 
+  const [data, setData] = useState([]);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" }); 
 
-    
-    const auth = useAuth();
+  
+  const auth = useAuth();
 
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    
-    const getItems = useCallback(async () => {
-      try {
-        if(auth.isValidToken(auth.token)) {
-          const { token } = getUserLocalStorage();
-          const { id } = getInventoryLocalStorage();
-          const headersConfig = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-          };
-          const response = await getAllItems(id, headersConfig);
-          if (response && response.status === 200) {
-            setData(response.data.map(item => ({ name: item.name, unitPrice: item.unitPrice, amount: item.amount })));
-          } else {
-            setSnackbar({ 
-              open: true, 
-              message: "Error ao listar os itens.", 
-              severity: "error" 
-            });
-          }
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  
+  const getItems = useCallback(async () => {
+    try {
+      if (auth.isValidToken(auth.token)) {
+        const { token } = getUserLocalStorage();
+        const { id } = getInventoryLocalStorage();
+        const headersConfig = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await getAllItems(id, headersConfig);
+        if (response && response.status === 200) {
+          setData(response.data.map(item => ({ name: item.name, unitPrice: item.unitPrice, amount: item.amount })));
+        } else {
+          setSnackbar({ 
+            open: true, 
+            message: "Erro ao listar os itens.", 
+            severity: "error" 
+          });
         }
-      } catch (error) {
-        setSnackbar({ 
-          open: true, 
-          message: "Erro interno. Tente novamente mais tarde.", 
-          severity: "error"
-        });
-      } 
-    },[auth]);
+      }
+    } catch (error) {
+      setSnackbar({ 
+        open: true, 
+        message: "Erro interno. Tente novamente mais tarde.", 
+        severity: "error"
+      });
+    } 
+  }, [auth]);
 
-    useEffect(() => {
-      getItems();
-    },[getItems]);
+  useEffect(() => {
+    getItems();
+  }, [getItems]);
 
 
-    return (
+  const xLabels = data.map(item => item.name);
+  const unitPrices = data.map(item => item.unitPrice);
+  const amounts = data.map(item => item.amount);
 
-    <div>
-      {data ? (
-      <ResponsiveContainer width="100%" height={400}>
-        <BarChart
-          width={500}
-          height={300}
-          data={data}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="unitPrice" fill={colors.purpleAccent[600]} />
-          <Bar dataKey="amount" fill={colors.greenAccent[500]} />
-        </BarChart>
-      </ResponsiveContainer>
-    ) : (
-      <p>Carregando...</p>
-    )}
+  return (
+    <div style={{ backgroundColor: colors.grey[800], }}>
+      <BarChart
+        width={500}
+        height={300}
+        series={[
+          {
+            data: unitPrices,
+            label: 'Preco Unitario',
+            id: 'unitPriceId',
+            color: colors.purpleAccent[600]
+          },
+          {
+            data: amounts,
+            label: 'Quantidade',
+            id: 'amountId',
+            color: colors.greenAccent[500]
+          },
+        ]}
+        xAxis={[{ data: xLabels, scaleType: 'band' }]}
+      />
+      {snackbar.open && (
+        <p>
+          {snackbar.message}
+        </p>
+      )}
     </div>
-
   );
 }
 

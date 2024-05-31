@@ -107,20 +107,10 @@ const SignUp = () => {
         });
         navigate('/');
       }
-      else{
-        setSnackbar({
-          open: true,
-          message:
-            "Usuario ou Email ja estao cadastrados. Tente novamente.",
-          severity: "error",
-        });
-      }
-
     } catch (error) {
       setSnackbar({
         open: true,
-        message:
-          "Erro ao fazer o cadastro. Tente novamente mais tarde.",
+        message: "Seus dados não são válidos. Tente novamente.",
         severity: "error",
       });
     }
@@ -202,11 +192,11 @@ const SignUp = () => {
                   },
                   minLength: {
                     value: 3,
-                    message: "Nome precisa ter mais de 3 letras."
+                    message: "Nome não pode ser pequeno ou muito grande."
                   },
                   maxLength: {
                     value: 40,
-                    message: "Nome ultrapassou o limite de caracteres."
+                    message: "Nome não pode ser pequeno ou muito grande."
                   },
                 })
               }
@@ -231,11 +221,11 @@ const SignUp = () => {
                   },
                   minLength: {
                     value: 3,
-                    message: "Nome de Usuário precisa ter mais de 3 letras."
+                    message: "Nome de Usuário não pode ser pequeno ou muito grande."
                   },
                   maxLength: {
                     value: 40,
-                    message: "Nome de Usuário ultrapassou o limite de caracteres."
+                    message: "Nome de Usuário não pode ser pequeno ou muito grande."
                   },
                   
                 })
@@ -259,7 +249,7 @@ const SignUp = () => {
                   },
                   pattern: {
                     value: /^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/,
-                    message: "Email não é válido. O email digitado precisa ser como example@email.com",
+                    message: "Email não é válido. O email digitado precisa ser como exemplo@email.com",
                   },
                   
                 }
@@ -296,11 +286,11 @@ const SignUp = () => {
                   required: "Senha é obrigatória.",
                   minLength: { 
                     value: 6, 
-                    message: "Senha deve ter no mínimo 6 caracteres." 
+                    message: "Senha deve ter a quantidade necessaria de caracteres." 
                   },
                   maxLength: { 
                     value: 15,
-                    message: "Senha deve ter no máximo 15 caracteres."
+                    message: "Senha deve ter a quantidade necessaria de caracteres."
                   }
                 })}
               />

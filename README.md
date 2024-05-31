@@ -24,11 +24,7 @@ Antes de começar, verifique se você tem o Node.js e npm instalados em sua máq
 
 Depois de instalar as dependências, você pode iniciar o servidor de desenvolvimento. Isso permitirá que você visualize sua aplicação React em tempo real e faça alterações no código:
 
-    ```npm run dev```
-
-Após o servidor iniciar com sucesso, você poderá acessar sua aplicação em seu navegador usando o seguinte URL:
-
-http://localhost:3000
+    npm run dev
 
 
 ## Licença

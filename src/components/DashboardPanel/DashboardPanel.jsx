@@ -15,8 +15,8 @@ const DashboardPanel = () => {
       <Navbar />
       <Box sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
         <Toolbar />
-        <Header title="Dashboard" subtitle="Veja suas movimentacoes via graficos" />
-        <Box sx={{ display:"flex", flexDirection:"row", justifyContent:"space-around" }}>
+        <Header title="Dashboard" subtitle="Veja suas movimentações via gráficos" />
+        <Box sx={{ display:"flex", flexWrap: "wrap" , flexDirection:"row", justifyContent:"space-around" }}>
           <BarChartApp />
           <LineChartApp />
           <PieChartApp />

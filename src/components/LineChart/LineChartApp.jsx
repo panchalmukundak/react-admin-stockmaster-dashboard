@@ -5,76 +5,72 @@ import { getInventoryLocalStorage } from "../../hooks/Context/InventoryProvider/
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart } from '@mui/x-charts/LineChart';
 
 const LineChartApp = () => {
-    const [data, setData] = useState([]);
-    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" }); 
+  const [data, setData] = useState([]);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "" }); 
 
-    const auth = useAuth();
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    
-    const getItems = useCallback(async () => {
-      try {
-        if(auth.isValidToken(auth.token)) {
-          const { token } = getUserLocalStorage();
-          const { id } = getInventoryLocalStorage();
-          const headersConfig = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-          };
-          const response = await getAllItems(id, headersConfig);
-          if (response && response.status === 200) {
-            setData(response.data.map(item => ({ name: item.name, unitPrice: item.unitPrice, amount: item.amount })));
-          } else {
-            setSnackbar({ 
-              open: true, 
-              message: "Error ao listar os itens.", 
-              severity: "error" 
-            });
-          }
+  const auth = useAuth();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  
+  const getItems = useCallback(async () => {
+    try {
+      if(auth.isValidToken(auth.token)) {
+        const { token } = getUserLocalStorage();
+        const { id } = getInventoryLocalStorage();
+        const headersConfig = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await getAllItems(id, headersConfig);
+        if (response && response.status === 200) {
+          setData(response.data.map(item => ({ name: item.name, unitPrice: item.unitPrice, amount: item.amount })));
+        } else {
+          setSnackbar({ 
+            open: true, 
+            message: "Error ao listar os itens.", 
+            severity: "error" 
+          });
         }
-      } catch (error) {
-        setSnackbar({ 
-          open: true, 
-          message: "Erro interno. Tente novamente mais tarde.", 
-          severity: "error"
-        });
-      } 
-    },[auth]);
+      }
+    } catch (error) {
+      setSnackbar({ 
+        open: true, 
+        message: "Erro interno. Tente novamente mais tarde.", 
+        severity: "error"
+      });
+    } 
+  },[auth]);
 
-    useEffect(() => {
-      getItems();
-    }, [getItems]);
+  useEffect(() => {
+    getItems();
+  }, [getItems]);
 
-    return (
-      <div>
-        {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart
-              data={data}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="unitPrice" stroke={colors.purpleAccent[600]} />
-              <Line type="monotone" dataKey="amount" stroke={colors.greenAccent[500]} />
-            </LineChart>
-          </ResponsiveContainer>
-        ) : (
-          <p>Carregando...</p>
-        )}
-      </div>
-    );
+  const xLabels = data.map(item => item.name);
+  const unitPrices = data.map(item => item.unitPrice);
+  const amounts = data.map(item => item.amount);
+
+  return (
+    <div style={{ backgroundColor: colors.grey[800], }}>
+      <LineChart
+        width={500}
+        height={300}
+        series={[
+          { data: unitPrices, label: 'Preco Unitario', color: colors.orangeAccent[500] },
+          { data: amounts, label: 'Quantidade', color: colors.greenAccent[500] },
+        ]}
+        xAxis={[{ scaleType: 'point', data: xLabels }]}
+      />
+      {snackbar.open && (
+        <p>
+          {snackbar.message}
+        </p>
+      )}
+    </div>
+  );
 }
 
 export default LineChartApp;
