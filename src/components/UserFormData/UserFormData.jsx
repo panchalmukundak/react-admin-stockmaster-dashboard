@@ -20,6 +20,7 @@ import { useTheme } from '@emotion/react';
 import CustomAlert from '../CustomAlert/CustomAlert';
 import { useAuth } from '../../hooks/Context/AuthProvider/useAuth';
 import { getUserLocalStorage } from '../../hooks/Context/AuthProvider/util';
+import { validateNoOffensiveTerms } from '../../util/util';
 
 const UserFormData = () => {
 
@@ -114,18 +115,19 @@ const UserFormData = () => {
                     helperText={errors?.name?.message}
                     {...register("name", 
                         { 
-                        required: {
-                            value: true,
-                            message: "Nome é obrigatório.",
-                        },
-                        minLength: {
-                            value: 3,
-                            message: "Nome precisa ter mais de 3 letras."
-                        },
-                        maxLength: {
-                            value: 40,
-                            message: "Nome ultrapassou o limite de caracteres."
-                        },
+                            required: {
+                                value: true,
+                                message: "Nome é obrigatório.",
+                            },
+                            minLength: {
+                                value: 3,
+                                message: "Nome precisa ter mais de 3 letras."
+                            },
+                            maxLength: {
+                                value: 40,
+                                message: "Nome ultrapassou o limite de caracteres."
+                            },
+                            validate: validateNoOffensiveTerms
                         })
                     }
                 />

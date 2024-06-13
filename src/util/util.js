@@ -2,6 +2,12 @@ import api from "../services/api";
 
 // SignUp
 
+export const validateNoOffensiveTerms = (value) => {
+  const offensiveTerms = ["babaca", "macaco", "merda", "sujo", "viado", "fdp", "viadinho", "puta"];
+  const regex = new RegExp(`\\b(${offensiveTerms.join('|')})\\b`, 'i');
+  return !regex.test(value) || "Nome contém termos ofensivos ou discriminatórios.";
+};
+
 export async function validateUserName(userName) {
   try {
     const response = await api.get(`/api/v1/users/username/${userName}`);

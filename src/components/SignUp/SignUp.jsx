@@ -27,7 +27,7 @@ import { NavLink, useNavigate  } from "react-router-dom";
 import { useAuth } from "../../hooks/Context/AuthProvider/useAuth";
 import imgLeft from "../../assets/pexels-selim-can-ik-5860937.jpg";
 import CustomAlert from '../CustomAlert/CustomAlert';
-
+import { validateNoOffensiveTerms } from '../../util/util';
 
 const changeTextFieldStyles = (isErrorMessageExists) => ({
   "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
@@ -198,6 +198,7 @@ const SignUp = () => {
                     value: 40,
                     message: "Nome não pode ser pequeno ou muito grande."
                   },
+                  validate: validateNoOffensiveTerms
                 })
               }
             />
@@ -227,7 +228,7 @@ const SignUp = () => {
                     value: 40,
                     message: "Nome de Usuário não pode ser pequeno ou muito grande."
                   },
-                  
+                  validate: validateNoOffensiveTerms
                 })
               }
             />
