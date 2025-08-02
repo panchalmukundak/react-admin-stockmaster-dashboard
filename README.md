@@ -2,31 +2,23 @@
 
 React Admin Dashboard App | React, Material UI, Data Grid, Chart, Light & Dark Mode.
 
-## Pré-requisitos
+This project serves as a starter template for building admin dashboards with modern UI components and theme support.
 
-Antes de começar, verifique se você tem o Node.js e npm instalados em sua máquina. Você pode instalá-los a partir do [site oficial do Node.js](https://nodejs.org/).
+For setup and usage instructions, please refer to the [Installation Guide](./INSTALLATION.md).
 
-## Instalação
+## Features
 
-1. Clone este repositório em sua máquina local:
+- React + Vite
+- Material UI (MUI) Components
+- Responsive Layout
+- Data Grid for tabular data
+- Integrated Charts
+- Light and Dark mode toggle
 
-    ```https://github.com/alessandradocouto/react-admin-stockmaster-dashboard.git```
+## Repository
 
-2. Navegue até o diretório da aplicação:
+[GitHub Repository](https://github.com/panchalmukundak/react-admin-stockmaster-dashboard)
 
-    ```cd react-admin-stockmaster-dashboard```
+## License
 
-3. Instale as dependências do projeto utilizando npm:
-
-    ```npm install```
-
-## Execução
-
-Depois de instalar as dependências, você pode iniciar o servidor de desenvolvimento. Isso permitirá que você visualize sua aplicação React em tempo real e faça alterações no código:
-
-    npm run dev
-
-
-## Licença
-
-Este projeto está licenciado sob a MIT License.
+This project is licensed under the MIT License.
